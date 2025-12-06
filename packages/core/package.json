@@ -1,0 +1,79 @@
+{
+  "name": "@fydemy/cms",
+  "version": "1.0.0",
+  "description": "Simple file-based CMS for Next.js without database - with GitHub integration for production",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "pnpm run type-check && pnpm run build && pnpm run test"
+  },
+  "keywords": [
+    "cms",
+    "nextjs",
+    "next",
+    "markdown",
+    "vercel",
+    "headless-cms",
+    "file-based",
+    "github",
+    "content-management",
+    "static-site",
+    "jamstack",
+    "typescript"
+  ],
+  "author": {
+    "name": "Fydemy",
+    "url": "https://fydemy.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fydemy/cms.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/fydemy/cms/issues"
+  },
+  "homepage": "https://github.com/fydemy/cms#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@octokit/rest": "^20.0.2",
+    "gray-matter": "^4.0.3",
+    "jose": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "@vitest/coverage-v8": "^1.6.1",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.6.1"
+  },
+  "peerDependencies": {
+    "next": ">=13.0.0"
+  }
+}

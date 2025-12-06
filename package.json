@@ -1,0 +1,22 @@
+{
+  "name": "@fydemy/cms-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Simple file-based CMS for Next.js",
+  "scripts": {
+    "dev": "pnpm --filter dev dev",
+    "build": "pnpm --filter @fydemy/cms build",
+    "build:all": "pnpm -r build"
+  },
+  "keywords": [
+    "cms",
+    "nextjs",
+    "markdown",
+    "vercel"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

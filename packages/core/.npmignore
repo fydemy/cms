@@ -1,0 +1,40 @@
+# Exclude source files
+src/
+*.ts
+!*.d.ts
+
+# Exclude tests
+**/__tests__/
+**/*.test.ts
+**/*.spec.ts
+vitest.config.ts
+
+# Exclude development files
+tsconfig.json
+tsup.config.ts
+.gitignore
+.npmignore
+
+# Exclude IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Exclude build artifacts
+node_modules/
+*.log
+.DS_Store
+.turbo
+
+# Exclude CI/CD
+.github/
+.gitlab-ci.yml
+
+# Keep only necessary files:
+# - dist/ (built files)
+# - LICENSE
+# - README.md
+# - CHANGELOG.md
+# - package.json
