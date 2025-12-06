@@ -30,10 +30,10 @@ jobs:
 
       - name: Build
         run: pnpm build
-        working-directory: packages/cms/packages/core
+        working-directory: packages/core
 
       - name: Publish to NPM
         run: pnpm publish --access public
-        working-directory: packages/cms/packages/core
+        working-directory: packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -32,12 +32,12 @@ jobs:
 
       - name: Type Check
         run: pnpm type-check
-        working-directory: packages/cms/packages/core
+        working-directory: packages/core
 
       - name: Run Tests
         run: pnpm test
-        working-directory: packages/cms/packages/core
+        working-directory: packages/core
 
       - name: Build
         run: pnpm build
-        working-directory: packages/cms/packages/core
+        working-directory: packages/core
