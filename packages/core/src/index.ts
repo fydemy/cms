@@ -56,6 +56,10 @@ export {
 
 export { handleUpload } from "./api/upload";
 
+// UI Components
+export { AdminDashboard } from "./ui/AdminDashboard";
+export { Login } from "./ui/Login";
+
 // Middleware
 export { createAuthMiddleware } from "./middleware/auth";
 

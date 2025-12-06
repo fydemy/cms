@@ -1,6 +1,6 @@
 {
   "name": "@fydemy/cms",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple file-based CMS for Next.js without database - with GitHub integration for production",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -11,6 +11,9 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     }
+  },
+  "bin": {
+    "fydemy-cms": "./dist/bin.js"
   },
   "files": [
     "dist",
@@ -68,6 +71,8 @@
   },
   "devDependencies": {
     "@types/node": "^20.10.6",
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7",
     "@vitest/coverage-v8": "^1.6.1",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3",
