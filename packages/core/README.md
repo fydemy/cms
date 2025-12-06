@@ -32,24 +32,29 @@ yarn add @fydemy/cms
 
 ### 1. Initialize the CMS
 
-Create a script to initialize your content directory:
-
-```typescript
-// scripts/init-cms.ts
-import { initCMS } from "@fydemy/cms";
-
-initCMS();
-```
-
-Run it:
+Run the initialization command in your Next.js App Router project:
 
 ```bash
-npx tsx scripts/init-cms.ts
+npx fydemy-cms init
 ```
 
-### 2. Set Environment Variables
+This command will automatically:
 
-Create `.env.local`:
+- Create the content directory
+- Scaffold Admin UI pages (`/app/admin`)
+- Create API routes (`/app/api/cms`)
+- Create a `.env.local.example` file
+- Provide instructions for updating `middleware.ts`
+
+### 2. Configure Environment
+
+Copy `.env.local.example` to `.env.local` and set your credentials:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Update variables in `.env.local`:
 
 ```env
 # Required for authentication
@@ -65,62 +70,24 @@ GITHUB_BRANCH=main
 
 > **Security Note**: Use strong passwords and keep `CMS_SESSION_SECRET` at least 32 characters long.
 
-### 3. Set Up API Routes
+### 3. Update Middleware
 
-Create the following API routes in your Next.js app:
-
-**`app/api/cms/login/route.ts`**
-
-```typescript
-import { handleLogin } from "@fydemy/cms";
-export { handleLogin as POST };
-```
-
-**`app/api/cms/logout/route.ts`**
-
-```typescript
-import { handleLogout } from "@fydemy/cms";
-export { handleLogout as POST };
-```
-
-**`app/api/cms/content/[...path]/route.ts`**
-
-```typescript
-import { createContentApiHandlers } from "@fydemy/cms";
-
-const handlers = createContentApiHandlers();
-export const GET = handlers.GET;
-export const POST = handlers.POST;
-export const DELETE = handlers.DELETE;
-```
-
-**`app/api/cms/list/[[...path]]/route.ts`**
-
-```typescript
-import { createListApiHandlers } from "@fydemy/cms";
-
-const handlers = createListApiHandlers();
-export const GET = handlers.GET;
-```
-
-### 4. Add Middleware
-
-**`middleware.ts`** (root of your project)
+The init command will guide you to update `middleware.ts` to protect admin routes:
 
 ```typescript
 import { createAuthMiddleware } from "@fydemy/cms";
+import { NextRequest } from "next/server";
 
-export const middleware = createAuthMiddleware({
-  loginPath: "/admin/login",
-  protectedPaths: ["/admin"],
-});
+export function middleware(request: NextRequest) {
+  return createAuthMiddleware()(request);
+}
 
 export const config = {
   matcher: ["/admin/:path*"],
 };
 ```
 
-### 5. Read Content in Your App
+### 4. Read Content in Your App
 
 ```typescript
 import { getMarkdownContent } from "@fydemy/cms";

@@ -48,7 +48,7 @@ A complete, minimal CMS package for Next.js:
 
 ## Use in Your Own Project
 
-See [README.md](../README.md) for installation and setup instructions.
+See [README.md](./README.md) for installation and setup instructions.
 
 ## Features
 
