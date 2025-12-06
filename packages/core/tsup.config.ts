@@ -8,4 +8,5 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   external: ["next", "react", "react-dom"],
+  publicDir: "src/init/templates",
 });

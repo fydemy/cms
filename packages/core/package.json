@@ -1,6 +1,6 @@
 {
   "name": "@fydemy/cms",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple file-based CMS for Next.js without database - with GitHub integration for production",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -74,6 +74,9 @@
     "@types/react": "^18.3.27",
     "@types/react-dom": "^18.3.7",
     "@vitest/coverage-v8": "^1.6.1",
+    "autoprefixer": "^10.4.22",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3",
     "vitest": "^1.6.1"

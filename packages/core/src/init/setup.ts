@@ -1,5 +1,9 @@
 import fs from "fs/promises";
 import path from "path";
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const execAsync = promisify(exec);
 
 export interface InitCMSConfig {
   /** Directory where content is stored (default: "public/content") */
@@ -28,6 +32,57 @@ export async function initCMS(config: InitCMSConfig = {}) {
 
   console.log("🚀 Initializing @fydemy/cms...");
 
+  // 0. Install Dependencies
+  console.log("📦 Checking dependencies...");
+  try {
+    const packageJsonPath = path.join(process.cwd(), "package.json");
+    const packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf-8"));
+    const dependencies = {
+      ...packageJson.dependencies,
+      ...packageJson.devDependencies,
+    };
+
+    const missingDeps = [];
+    if (!dependencies["@fydemy/cms"]) missingDeps.push("@fydemy/cms");
+    if (!dependencies["tailwindcss"]) missingDeps.push("tailwindcss");
+
+    // shadcn dependencies
+    if (!dependencies["class-variance-authority"])
+      missingDeps.push("class-variance-authority");
+    if (!dependencies["clsx"]) missingDeps.push("clsx");
+    if (!dependencies["tailwind-merge"]) missingDeps.push("tailwind-merge");
+    if (!dependencies["@radix-ui/react-slot"])
+      missingDeps.push("@radix-ui/react-slot");
+    if (!dependencies["@radix-ui/react-label"])
+      missingDeps.push("@radix-ui/react-label");
+
+    if (missingDeps.length > 0) {
+      console.log(
+        `🔧 Installing missing dependencies: ${missingDeps.join(", ")}...`
+      );
+      // Detect package manager (default to npm if locking file not found)
+      let installCmd = "npm install";
+      try {
+        await fs.access("pnpm-lock.yaml");
+        installCmd = "pnpm add";
+      } catch {
+        try {
+          await fs.access("yarn.lock");
+          installCmd = "yarn add";
+        } catch {
+          // npm
+        }
+      }
+
+      await execAsync(`${installCmd} ${missingDeps.join(" ")}`);
+      console.log("✅ Dependencies installed");
+    }
+  } catch (error) {
+    console.warn(
+      "⚠️ Could not check/install dependencies automatically. Please ensure all dependencies are installed."
+    );
+  }
+
   // 1. Create content directory and example file
   await fs.mkdir(fullPath, { recursive: true });
 
@@ -54,24 +109,75 @@ This is an example markdown file. You can edit or delete it from the admin dashb
   await fs.writeFile(examplePath, exampleContent, "utf-8");
   console.log("✅ Created content directory and example file");
 
-  // 2. Scaffold Admin Pages
+  // 2. Scaffold Admin Pages (Ejected Code)
   const adminDir = path.join(appDir, "admin");
   const loginDir = path.join(adminDir, "login");
 
   await fs.mkdir(loginDir, { recursive: true });
 
-  await fs.writeFile(
-    path.join(adminDir, "page.tsx"),
-    `import { AdminDashboard } from '@fydemy/cms';\n\nexport default AdminDashboard;\n`,
+  // Read template files from the dist directory (publicDir copied them there)
+  const loginTemplate = await fs.readFile(
+    path.join(__dirname, "login.template.tsx"),
+    "utf-8"
+  );
+  const adminTemplate = await fs.readFile(
+    path.join(__dirname, "admin.template.tsx"),
     "utf-8"
   );
 
-  await fs.writeFile(
-    path.join(loginDir, "page.tsx"),
-    `import { Login } from '@fydemy/cms';\n\nexport default Login;\n`,
+  await fs.writeFile(path.join(adminDir, "page.tsx"), adminTemplate, "utf-8");
+
+  await fs.writeFile(path.join(loginDir, "page.tsx"), loginTemplate, "utf-8");
+  console.log("✅ Scaffolded Admin UI (shadcn/ui components)");
+
+  // 2.5. Scaffold shadcn/ui Components and Utilities
+  const componentsDir = path.join(process.cwd(), "components", "ui");
+  const libDir = path.join(process.cwd(), "lib");
+
+  await fs.mkdir(componentsDir, { recursive: true });
+  await fs.mkdir(libDir, { recursive: true });
+
+  // Copy utils.ts
+  const utilsTemplate = await fs.readFile(
+    path.join(__dirname, "lib", "utils.ts"),
     "utf-8"
   );
-  console.log("✅ Created Admin UI pages");
+  await fs.writeFile(path.join(libDir, "utils.ts"), utilsTemplate, "utf-8");
+
+  // Copy shadcn components
+  const componentFiles = [
+    "button.tsx",
+    "input.tsx",
+    "card.tsx",
+    "label.tsx",
+    "textarea.tsx",
+    "badge.tsx",
+  ];
+
+  for (const componentFile of componentFiles) {
+    const componentTemplate = await fs.readFile(
+      path.join(__dirname, "components", "ui", componentFile),
+      "utf-8"
+    );
+    await fs.writeFile(
+      path.join(componentsDir, componentFile),
+      componentTemplate,
+      "utf-8"
+    );
+  }
+
+  // Copy components.json
+  const componentsJsonTemplate = await fs.readFile(
+    path.join(__dirname, "components.json"),
+    "utf-8"
+  );
+  await fs.writeFile(
+    path.join(process.cwd(), "components.json"),
+    componentsJsonTemplate,
+    "utf-8"
+  );
+
+  console.log("✅ Scaffolded shadcn/ui components");
 
   // 3. Scaffold API Routes
   const apiCmsDir = path.join(appDir, "api", "cms");
