@@ -212,7 +212,19 @@ This is an example markdown file. You can edit or delete it from the admin dashb
   });
   await fs.writeFile(
     path.join(apiCmsDir, "list", "[[...path]]", "route.ts"),
-    `import { createListApiHandlers } from '@fydemy/cms';\n\nconst handlers = createListApiHandlers();\nexport const GET = handlers.GET;\n`,
+    `import { createListApiHandlers } from '@fydemy/cms';
+import { NextRequest } from 'next/server';
+
+const handlers = createListApiHandlers();
+
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ path?: string[] }> }
+) {
+  const params = await context.params;
+  return handlers.GET(request, { params });
+}
+`,
     "utf-8"
   );
 
@@ -222,7 +234,35 @@ This is an example markdown file. You can edit or delete it from the admin dashb
   });
   await fs.writeFile(
     path.join(apiCmsDir, "content", "[...path]", "route.ts"),
-    `import { createContentApiHandlers } from '@fydemy/cms';\n\nconst handlers = createContentApiHandlers();\nexport const GET = handlers.GET;\nexport const POST = handlers.POST;\nexport const DELETE = handlers.DELETE;\n`,
+    `import { createContentApiHandlers } from '@fydemy/cms';
+import { NextRequest } from 'next/server';
+
+const handlers = createContentApiHandlers();
+
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ path: string[] }> }
+) {
+  const params = await context.params;
+  return handlers.GET(request, { params });
+}
+
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<{ path: string[] }> }
+) {
+  const params = await context.params;
+  return handlers.POST(request, { params });
+}
+
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ path: string[] }> }
+) {
+  const params = await context.params;
+  return handlers.DELETE(request, { params });
+}
+`,
     "utf-8"
   );
   console.log("✅ Created API routes");
@@ -249,7 +289,7 @@ export function middleware(request: NextRequest) {
   } catch {
     await fs.writeFile(
       middlewarePath,
-      `import { createAuthMiddleware } from '@fydemy/cms';\nimport { NextRequest } from 'next/server';\n\nexport function middleware(request: NextRequest) {\n  return createAuthMiddleware()(request);\n}\n\nexport const config = {\n  matcher: ['/admin/:path*'],\n};\n`,
+      `import { createAuthMiddleware } from '@fydemy/cms';\nimport { NextRequest } from 'next/server';\n\nexport function middleware(request: NextRequest) {\n  return createAuthMiddleware()(request);\n}\n\nexport const config = {\n  matcher: ['/admin/:path*'],\n  runtime: 'nodejs',\n};\n`,
       "utf-8"
     );
     console.log("✅ Created middleware.ts");
