@@ -70,24 +70,7 @@ GITHUB_BRANCH=main
 
 > **Security Note**: Use strong passwords and keep `CMS_SESSION_SECRET` at least 32 characters long.
 
-### 3. Update Middleware
-
-The init command will guide you to update `middleware.ts` to protect admin routes:
-
-```typescript
-import { createAuthMiddleware } from "@fydemy/cms";
-import { NextRequest } from "next/server";
-
-export function middleware(request: NextRequest) {
-  return createAuthMiddleware()(request);
-}
-
-export const config = {
-  matcher: ["/admin/:path*"],
-};
-```
-
-### 4. Read Content in Your App
+### 3. Read Content in Your App
 
 ```typescript
 import { getMarkdownContent } from "@fydemy/cms";

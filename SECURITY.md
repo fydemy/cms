@@ -13,7 +13,7 @@ We release patches for security vulnerabilities for the following versions:
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-If you discover a security vulnerability in @fydemy/cms, please report it by emailing security@fydemy.com (or create a private security advisory on GitHub).
+If you discover a security vulnerability in @fydemy/cms, please report it by emailing fydemy@gmail.com (or create a private security advisory on GitHub).
 
 Please include the following information:
 

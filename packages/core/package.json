@@ -1,6 +1,6 @@
 {
   "name": "@fydemy/cms",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Simple file-based CMS for Next.js without database - with GitHub integration for production",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

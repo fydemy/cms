@@ -1,7 +1,6 @@
 {
-  "name": "@fydemy/cms-monorepo",
+  "name": "@fydemy/cms",
   "version": "0.0.0",
-  "private": true,
   "description": "Simple file-based CMS for Next.js",
   "scripts": {
     "dev": "pnpm --filter dev dev",
