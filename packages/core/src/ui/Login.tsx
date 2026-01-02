@@ -35,126 +35,73 @@ export function Login() {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        background: "#f5f5f5",
-        fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "400px",
-          padding: "2rem",
-          background: "white",
-          borderRadius: "8px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-        }}
-      >
-        <h1 style={{ marginBottom: "0.5rem", textAlign: "center" }}>
-          Admin Login
-        </h1>
-        <p style={{ color: "#666", marginBottom: "2rem", textAlign: "center" }}>
-          Enter your credentials to access the CMS
-        </p>
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4 font-sans text-slate-900">
+      <div className="w-full max-w-[350px] rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="flex flex-col space-y-1.5 p-6">
+          <h1 className="text-2xl font-semibold leading-none tracking-tight">
+            Admin Login
+          </h1>
+          <p className="text-sm text-slate-500">
+            Enter your credentials to access the CMS
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: "1rem" }}>
-            <label
-              htmlFor="username"
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                fontWeight: 500,
-              }}
-            >
-              Username
-            </label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setUsername(e.target.value)
-              }
-              required
-              autoFocus
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-              }}
-            />
-          </div>
-
-          <div style={{ marginBottom: "1.5rem" }}>
-            <label
-              htmlFor="password"
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                fontWeight: 500,
-              }}
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setPassword(e.target.value)
-              }
-              required
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-              }}
-            />
-          </div>
-
-          {error && (
-            <div
-              style={{
-                marginBottom: "1rem",
-                padding: "0.75rem",
-                background: "#ffe6e6",
-                color: "#d32f2f",
-                borderRadius: "4px",
-                fontSize: "0.875rem",
-              }}
-            >
-              {error}
+        <div className="p-6 pt-0">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label
+                htmlFor="username"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Username
+              </label>
+              <input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setUsername(e.target.value)
+                }
+                required
+                autoFocus
+                className="flex h-9 w-full rounded-md border border-slate-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+              />
             </div>
-          )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              background: "#0070f3",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              fontSize: "1rem",
-              fontWeight: 500,
-              cursor: "pointer",
-              opacity: loading ? 0.7 : 1,
-            }}
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
+            <div className="space-y-2">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setPassword(e.target.value)
+                }
+                required
+                className="flex h-9 w-full rounded-md border border-slate-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+              />
+            </div>
+
+            {error && (
+              <div className="rounded-md bg-red-50 p-3 text-sm text-red-500 border border-red-200">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="inline-flex h-9 w-full items-center justify-center whitespace-nowrap rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-slate-50 shadow transition-colors hover:bg-slate-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50"
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

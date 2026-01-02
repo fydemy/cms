@@ -336,41 +336,10 @@ export function AdminDashboard() {
     }
   };
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    setMessage("");
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/cms/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setMessage(`✅ File uploaded! Path: ${data.url}`);
-        setTimeout(() => setMessage(""), 5000);
-      } else {
-        setMessage("❌ Failed to upload file");
-      }
-    } catch (error) {
-      setMessage("❌ Error uploading file");
-    } finally {
-      setUploading(false);
-      event.target.value = "";
-    }
-  };
-
   const renderField = (key: string, field: FieldMeta) => {
+    const inputClasses =
+      "flex h-9 w-full rounded-md border border-slate-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:cursor-not-allowed disabled:opacity-50";
+
     switch (field.type) {
       case "text":
         return (
@@ -379,12 +348,7 @@ export function AdminDashboard() {
             type="text"
             value={field.value}
             onChange={(e) => updateField(key, e.target.value)}
-            style={{
-              width: "100%",
-              padding: "0.5rem",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-            }}
+            className={inputClasses}
           />
         );
       case "number":
@@ -394,12 +358,7 @@ export function AdminDashboard() {
             type="number"
             value={field.value}
             onChange={(e) => updateField(key, parseFloat(e.target.value) || 0)}
-            style={{
-              width: "100%",
-              padding: "0.5rem",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-            }}
+            className={inputClasses}
           />
         );
       case "date":
@@ -409,12 +368,7 @@ export function AdminDashboard() {
             type="date"
             value={field.value}
             onChange={(e) => updateField(key, e.target.value)}
-            style={{
-              width: "100%",
-              padding: "0.5rem",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-            }}
+            className={inputClasses}
           />
         );
       case "markdown":
@@ -423,14 +377,7 @@ export function AdminDashboard() {
             id={key}
             value={field.value}
             onChange={(e) => updateField(key, e.target.value)}
-            style={{
-              width: "100%",
-              minHeight: key === "content" ? "400px" : "150px",
-              fontFamily: "monospace",
-              padding: "0.5rem",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-            }}
+            className="flex min-h-[300px] w-full rounded-md border border-slate-200 bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:cursor-not-allowed disabled:opacity-50 font-mono"
             placeholder={
               key === "content"
                 ? "Write your markdown content here..."
@@ -440,39 +387,32 @@ export function AdminDashboard() {
         );
       case "image":
         return (
-          <div>
+          <div className="space-y-2">
             <input
               id={key}
               type="text"
               value={field.value}
               onChange={(e) => updateField(key, e.target.value)}
               placeholder="/uploads/image.jpg or https://..."
-              style={{
-                width: "100%",
-                padding: "0.5rem",
-                marginBottom: "0.5rem",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-              }}
+              className={inputClasses}
             />
             <input
               type="file"
               accept="image/*"
               onChange={(e) => handleImageUpload(key, e)}
               disabled={uploading}
-              style={{ marginBottom: "0.5rem" }}
+              className="block w-full text-sm text-slate-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-md file:border-0
+                file:text-sm file:font-semibold
+                file:bg-slate-50 file:text-slate-700
+                hover:file:bg-slate-100"
             />
             {field.value && (
               <img
                 src={field.value}
                 alt={key}
-                style={{
-                  maxWidth: "200px",
-                  display: "block",
-                  marginTop: "0.5rem",
-                  borderRadius: "4px",
-                  border: "1px solid #ddd",
-                }}
+                className="max-w-[200px] rounded-md border border-slate-200"
               />
             )}
           </div>
@@ -484,441 +424,236 @@ export function AdminDashboard() {
             type="text"
             value={field.value}
             onChange={(e) => updateField(key, e.target.value)}
+            className={inputClasses}
           />
         );
     }
   };
 
   return (
-    <div
-      className="container"
-      style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "2rem",
-        }}
-      >
-        <h1>📝 Admin Dashboard</h1>
-        <button
-          onClick={handleLogout}
-          style={{
-            padding: "0.5rem 1rem",
-            background: "#f5f5f5",
-            border: "1px solid #ddd",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          Logout
-        </button>
+    <div className="min-h-screen bg-slate-50/50 pb-8">
+      <div className="border-b border-slate-200 bg-white px-4 py-4 mb-6">
+        <div className="container mx-auto max-w-7xl flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold tracking-tight">
+              📝 Admin Dashboard
+            </h1>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="inline-flex h-9 items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(250px, 300px) 1fr",
-          gap: "2rem",
-        }}
-      >
+      <div className="container mx-auto max-w-7xl px-4 grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6">
         {/* Sidebar */}
-        <div
-          style={{
-            background: "white",
-            padding: "1.5rem",
-            borderRadius: "8px",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          }}
-        >
-          <h2 style={{ marginTop: 0, marginBottom: "1rem" }}>Files</h2>
+        <div className="flex flex-col gap-4">
+          <div className="rounded-xl border border-slate-200 bg-white text-slate-950 shadow-sm">
+            <div className="p-6">
+              <h2 className="text-lg font-semibold leading-none tracking-tight mb-4">
+                Files
+              </h2>
 
-          {/* Breadcrumb */}
-          <div
-            style={{
-              marginBottom: "1rem",
-              fontSize: "0.875rem",
-              color: "#666",
-            }}
-          >
-            <span
-              onClick={() => setCurrentPath("")}
-              style={{
-                cursor: "pointer",
-                color: "#0070f3",
-                textDecoration: "underline",
-              }}
-            >
-              content
-            </span>
-            {currentPath && (
-              <>
-                {" / "}
-                <span style={{ fontWeight: "bold" }}>{currentPath}</span>
-              </>
-            )}
-          </div>
-
-          {/* Back button */}
-          {currentPath && (
-            <button
-              onClick={goUp}
-              style={{
-                width: "100%",
-                marginBottom: "1rem",
-                padding: "0.5rem",
-                background: "#f5f5f5",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-            >
-              ⬆️ Go Up
-            </button>
-          )}
-
-          {/* New file form */}
-          <div
-            style={{
-              marginBottom: "1.5rem",
-              paddingBottom: "1.5rem",
-              borderBottom: "1px solid #eee",
-            }}
-          >
-            <input
-              type="text"
-              placeholder="new-file.md"
-              value={newFileName}
-              onChange={(e) => setNewFileName(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "0.5rem",
-                marginBottom: "0.5rem",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-              }}
-            />
-            <button
-              onClick={createFile}
-              disabled={loading || !newFileName}
-              style={{
-                width: "100%",
-                padding: "0.5rem",
-                background: "#0070f3",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                opacity: loading ? 0.7 : 1,
-              }}
-            >
-              + New File
-            </button>
-          </div>
-
-          {/* File/folder list */}
-          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-            {entries.length === 0 && (
-              <li style={{ color: "#999", fontStyle: "italic" }}>
-                Empty directory
-              </li>
-            )}
-            {entries.map((entry) => (
-              <li
-                key={entry.path}
-                style={{
-                  marginBottom: "0.5rem",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                {entry.type === "directory" ? (
-                  <button
-                    onClick={() => navigateToDir(entry.path)}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      color: "#0070f3",
-                      cursor: "pointer",
-                      textAlign: "left",
-                      fontSize: "1rem",
-                      padding: "0.25rem 0",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    📁 {entry.name}
-                  </button>
-                ) : (
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <button
-                      onClick={() => loadFile(entry.path)}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        color: selectedFile === entry.path ? "#000" : "#444",
-                        cursor: "pointer",
-                        textAlign: "left",
-                        padding: "0.25rem 0",
-                        fontWeight:
-                          selectedFile === entry.path ? "bold" : "normal",
-                        textDecoration:
-                          selectedFile === entry.path ? "underline" : "none",
-                        flex: 1,
-                      }}
-                    >
-                      📄 {entry.name}
-                    </button>
-                    <button
-                      onClick={() => deleteFile(entry.path)}
-                      disabled={loading}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        color: "#d32f2f",
-                        cursor: "pointer",
-                        fontSize: "0.8rem",
-                        opacity: 0.7,
-                      }}
-                    >
-                      ✕
-                    </button>
-                  </div>
+              {/* Breadcrumb */}
+              <div className="mb-4 text-sm text-slate-500 flex items-center gap-1 overflow-hidden">
+                <button
+                  onClick={() => setCurrentPath("")}
+                  className="hover:text-slate-900 hover:underline shrink-0"
+                >
+                  content
+                </button>
+                {currentPath && (
+                  <>
+                    <span className="text-slate-300">/</span>
+                    <span className="font-medium truncate text-slate-900">
+                      {currentPath}
+                    </span>
+                  </>
                 )}
-              </li>
-            ))}
-          </ul>
+              </div>
+
+              {/* Back button */}
+              {currentPath && (
+                <button
+                  onClick={goUp}
+                  className="mb-4 inline-flex h-8 w-full items-center justify-center rounded-md bg-slate-100 px-3 text-xs font-medium text-slate-900 hover:bg-slate-200/80"
+                >
+                  ⬆️ Go Up
+                </button>
+              )}
+
+              {/* New file form */}
+              <div className="mb-6 space-y-2 border-b border-slate-100 pb-6">
+                <input
+                  type="text"
+                  placeholder="new-file.md"
+                  value={newFileName}
+                  onChange={(e) => setNewFileName(e.target.value)}
+                  className="flex h-9 w-full rounded-md border border-slate-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950"
+                />
+                <button
+                  onClick={createFile}
+                  disabled={loading || !newFileName}
+                  className="inline-flex h-9 w-full items-center justify-center rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-slate-50 shadow hover:bg-slate-900/90 disabled:pointer-events-none disabled:opacity-50"
+                >
+                  + New File
+                </button>
+              </div>
+
+              {/* File/folder list */}
+              <ul className="space-y-1">
+                {entries.length === 0 && (
+                  <li className="text-sm text-slate-500 italic px-2">
+                    Empty directory
+                  </li>
+                )}
+                {entries.map((entry) => (
+                  <li key={entry.path}>
+                    {entry.type === "directory" ? (
+                      <button
+                        onClick={() => navigateToDir(entry.path)}
+                        className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium hover:bg-slate-100 text-slate-700 hover:text-slate-900"
+                      >
+                        📁 {entry.name}
+                      </button>
+                    ) : (
+                      <div className="group flex items-center justify-between rounded-md hover:bg-slate-100 px-2 py-1.5">
+                        <button
+                          onClick={() => loadFile(entry.path)}
+                          className={`flex-1 text-left text-sm truncate ${
+                            selectedFile === entry.path
+                              ? "font-semibold text-slate-900"
+                              : "text-slate-600 group-hover:text-slate-900"
+                          }`}
+                        >
+                          📄 {entry.name}
+                        </button>
+                        <button
+                          onClick={() => deleteFile(entry.path)}
+                          disabled={loading}
+                          className="opacity-0 group-hover:opacity-100 ml-2 text-slate-400 hover:text-red-500 transition-opacity"
+                          title="Delete file"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
 
         {/* Editor */}
-        <div
-          style={{
-            background: "white",
-            padding: "2rem",
-            borderRadius: "8px",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          }}
-        >
-          {selectedFile ? (
-            <>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "2rem",
-                  paddingBottom: "1rem",
-                  borderBottom: "1px solid #eee",
-                }}
-              >
-                <h2 style={{ margin: 0 }}>Edit: {selectedFile}</h2>
-                <div style={{ display: "flex", gap: "0.5rem" }}>
-                  <button
-                    onClick={duplicateFile}
-                    disabled={loading}
-                    style={{
-                      padding: "0.5rem 1rem",
-                      background: "#f5f5f5",
-                      border: "1px solid #ddd",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    📋 Duplicate
-                  </button>
-                  <button
-                    onClick={saveFile}
-                    disabled={loading}
-                    style={{
-                      padding: "0.5rem 1rem",
-                      background: "#0070f3",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      opacity: loading ? 0.7 : 1,
-                    }}
-                  >
-                    {loading ? "Saving..." : "💾 Save Changes"}
-                  </button>
-                </div>
-              </div>
-
-              {message && (
-                <div
-                  style={{
-                    marginBottom: "1.5rem",
-                    padding: "0.75rem",
-                    background: message.includes("✅") ? "#e6ffe6" : "#ffe6e6",
-                    borderRadius: "4px",
-                    border: message.includes("✅")
-                      ? "1px solid #a5d6a7"
-                      : "1px solid #ef9a9a",
-                  }}
-                >
-                  {message}
-                </div>
-              )}
-
-              {/* Dynamic Fields */}
-              <div style={{ marginBottom: "2rem" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "1rem",
-                  }}
-                >
-                  <h3 style={{ fontSize: "1.1rem", margin: 0 }}>Fields</h3>
-                  <button
-                    onClick={addField}
-                    style={{
-                      fontSize: "0.875rem",
-                      padding: "0.4rem 0.8rem",
-                      background: "#e1f5fe",
-                      color: "#0288d1",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    + Add Field
-                  </button>
-                </div>
-
-                {Object.keys(fields).length === 0 ? (
-                  <div
-                    style={{
-                      padding: "2rem",
-                      textAlign: "center",
-                      background: "#f9f9f9",
-                      borderRadius: "4px",
-                      border: "1px dashed #ccc",
-                    }}
-                  >
-                    <p
-                      style={{ color: "#666", fontStyle: "italic", margin: 0 }}
+        <div className="flex flex-col gap-4">
+          <div className="rounded-xl border border-slate-200 bg-white text-slate-950 shadow-sm min-h-[500px]">
+            {selectedFile ? (
+              <div className="p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
+                  <h2 className="text-xl font-semibold tracking-tight break-all">
+                    Edit: {selectedFile}
+                  </h2>
+                  <div className="flex gap-2 shrink-0">
+                    <button
+                      onClick={duplicateFile}
+                      disabled={loading}
+                      className="inline-flex h-9 items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50"
                     >
-                      No fields yet. Click "+ Add Field" to start.
-                    </p>
-                    <small
-                      style={{
-                        color: "#999",
-                        marginTop: "0.5rem",
-                        display: "block",
-                      }}
+                      📋 Duplicate
+                    </button>
+                    <button
+                      onClick={saveFile}
+                      disabled={loading}
+                      className="inline-flex h-9 items-center justify-center rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-slate-50 shadow hover:bg-slate-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50"
                     >
-                      Add 'content' field for the main body
-                    </small>
+                      {loading ? "Saving..." : "💾 Save Changes"}
+                    </button>
                   </div>
-                ) : (
-                  Object.entries(fields).map(([key, field]) => (
-                    <div
-                      key={key}
-                      style={{
-                        marginBottom: "1.5rem",
-                        background: "#fff",
-                        border: "1px solid #eee",
-                        padding: "1rem",
-                        borderRadius: "6px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          marginBottom: "0.5rem",
-                        }}
-                      >
-                        <label htmlFor={key} style={{ fontWeight: 500 }}>
-                          {key}
-                          <span
-                            style={{
-                              marginLeft: "0.5rem",
-                              fontSize: "0.75rem",
-                              color: "#999",
-                              background: "#f0f0f0",
-                              padding: "0.1rem 0.4rem",
-                              borderRadius: "4px",
-                            }}
-                          >
-                            {field.type}
-                          </span>
-                        </label>
-                        <button
-                          onClick={() => removeField(key)}
-                          style={{
-                            background: "none",
-                            border: "none",
-                            color: "#e57373",
-                            cursor: "pointer",
-                            fontSize: "0.875rem",
-                          }}
-                        >
-                          ✕ Remove
-                        </button>
-                      </div>
+                </div>
 
-                      {renderField(key, field)}
-                    </div>
-                  ))
+                {message && (
+                  <div
+                    className={`mb-6 rounded-md p-3 text-sm flex items-center gap-2 ${
+                      message.includes("✅")
+                        ? "bg-green-50 text-green-900 border border-green-200"
+                        : "bg-red-50 text-red-900 border border-red-200"
+                    }`}
+                  >
+                    {message}
+                  </div>
                 )}
-              </div>
 
-              {/* General File Upload */}
-              <div
-                style={{
-                  marginTop: "3rem",
-                  paddingTop: "1rem",
-                  borderTop: "1px solid #eee",
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: "1rem",
-                    marginBottom: "0.5rem",
-                    color: "#666",
-                  }}
-                >
-                  Quick File Upload
-                </h3>
-                <div style={{ display: "flex", gap: "0.5rem" }}>
-                  <input
-                    type="file"
-                    onChange={handleFileUpload}
-                    disabled={uploading}
-                    style={{ flex: 1 }}
-                  />
-                  {uploading && (
-                    <span style={{ color: "#666" }}>Uploading...</span>
+                {/* Dynamic Fields */}
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-medium leading-none text-slate-500 uppercase tracking-wider">
+                      Frontmatter Fields
+                    </h3>
+                    <button
+                      onClick={addField}
+                      className="inline-flex h-8 items-center justify-center rounded-md bg-slate-100 px-3 text-xs font-medium text-slate-900 hover:bg-slate-200"
+                    >
+                      + Add Field
+                    </button>
+                  </div>
+
+                  {Object.keys(fields).length === 0 ? (
+                    <div className="text-center py-12 text-slate-500 border-2 border-dashed border-slate-200 rounded-lg">
+                      No fields found. Add one or load a file layout.
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {Object.entries(fields)
+                        .filter(([key]) => key !== "content")
+                        .map(([key, field]) => (
+                          <div key={key} className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <label
+                                htmlFor={key}
+                                className="text-sm font-medium bg-slate-100 px-2 py-0.5 rounded text-slate-700"
+                              >
+                                {key}{" "}
+                                <span className="text-slate-400 font-normal text-xs ml-1">
+                                  ({field.type})
+                                </span>
+                              </label>
+                              <button
+                                onClick={() => removeField(key)}
+                                className="text-xs text-red-500 hover:text-red-700 hover:underline"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                            {renderField(key, field)}
+                          </div>
+                        ))}
+
+                      {fields["content"] && (
+                        <div className="pt-6 mt-6 border-t border-slate-100">
+                          <label
+                            htmlFor="content"
+                            className="block text-sm font-medium mb-3 text-slate-900"
+                          >
+                            Content (Markdown)
+                          </label>
+                          {renderField("content", fields["content"])}
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
-            </>
-          ) : (
-            <div
-              style={{
-                textAlign: "center",
-                padding: "5rem 2rem",
-                color: "#999",
-              }}
-            >
-              <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>👈</div>
-              <p style={{ fontSize: "1.1rem" }}>
-                Select a file from the sidebar to edit
-              </p>
-              <p>or create a new file to get started</p>
-            </div>
-          )}
+            ) : (
+              <div className="flex flex-col items-center justify-center h-[500px] text-slate-500">
+                <div className="text-4xl mb-4">📄</div>
+                <p>Select a file to edit or create a new one.</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

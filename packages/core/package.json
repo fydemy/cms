@@ -65,6 +65,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.958.0",
     "@octokit/rest": "^20.0.2",
     "gray-matter": "^4.0.3",
     "jose": "^5.2.0"
@@ -75,6 +76,7 @@
     "@types/react-dom": "^18.3.7",
     "@vitest/coverage-v8": "^1.6.1",
     "autoprefixer": "^10.4.22",
+    "next": "^16.1.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.17",
     "tsup": "^8.0.1",

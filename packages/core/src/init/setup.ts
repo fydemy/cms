@@ -295,13 +295,56 @@ export function middleware(request: NextRequest) {
     console.log("✅ Created middleware.ts");
   }
 
-  // 5. Env example
-  const envExamplePath = path.join(process.cwd(), ".env.local.example");
-  await fs.writeFile(
-    envExamplePath,
-    `CMS_ADMIN_USERNAME=admin\nCMS_ADMIN_PASSWORD=password\nCMS_SESSION_SECRET=ensure_this_is_at_least_32_chars_long_random_string\n\n# GitHub Storage (Production)\nGITHUB_TOKEN=\nGITHUB_REPO=owner/repo\nGITHUB_BRANCH=main\n`,
-    "utf-8"
+  // 5. Env example & Storage Selection
+  console.log("\n⚙️  Configuration");
+
+  // Interactive storage selection
+  const rl = await import("readline");
+  const askQuestion = (query: string): Promise<string> => {
+    const interface_ = rl.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    return new Promise((resolve) => {
+      interface_.question(query, (ans) => {
+        interface_.close();
+        resolve(ans);
+      });
+    });
+  };
+
+  const storageChoice = await askQuestion(
+    "Select production storage provider:\n  1. GitHub (default)\n  2. S3 / Cloudflare R2 / Vercel Blob\nEnter choice [1]: "
   );
+
+  const isS3 = storageChoice.trim() === "2";
+
+  let envContent = `CMS_ADMIN_USERNAME=admin
+CMS_ADMIN_PASSWORD=password
+CMS_SESSION_SECRET=ensure_this_is_at_least_32_chars_long_random_string
+
+`;
+
+  if (isS3) {
+    envContent += `# S3 / Cloudflare R2 / Vercel Blob Storage
+STORAGE_BUCKET=my-bucket
+STORAGE_ENDPOINT=https://<accountid>.r2.cloudflarestorage.com
+STORAGE_ACCESS_KEY_ID=
+STORAGE_SECRET_ACCESS_KEY=
+STORAGE_REGION=auto
+STORAGE_PUBLIC_URL=https://pub-<id>.r2.dev
+`;
+  } else {
+    envContent += `# GitHub Storage (Production)
+# Generate at https://github.com/settings/tokens (Needs 'repo' or 'contents:write' scope)
+GITHUB_TOKEN=
+GITHUB_REPO=owner/repo
+GITHUB_BRANCH=main
+`;
+  }
+
+  const envExamplePath = path.join(process.cwd(), ".env.local.example");
+  await fs.writeFile(envExamplePath, envContent, "utf-8");
 
   console.log("");
   console.log("🎉 CMS initialized successfully!");
