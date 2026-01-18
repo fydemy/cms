@@ -25,7 +25,7 @@ export async function initCMS(config: InitCMSConfig = {}) {
     await fs.access(appDir);
   } catch {
     console.error(
-      '❌ Error: "app" directory not found. This init script requires Next.js App Router.'
+      '❌ Error: "app" directory not found. This init script requires Next.js App Router.',
     );
     return;
   }
@@ -58,7 +58,7 @@ export async function initCMS(config: InitCMSConfig = {}) {
 
     if (missingDeps.length > 0) {
       console.log(
-        `🔧 Installing missing dependencies: ${missingDeps.join(", ")}...`
+        `🔧 Installing missing dependencies: ${missingDeps.join(", ")}...`,
       );
       // Detect package manager (default to npm if locking file not found)
       let installCmd = "npm install";
@@ -79,7 +79,7 @@ export async function initCMS(config: InitCMSConfig = {}) {
     }
   } catch (error) {
     console.warn(
-      "⚠️ Could not check/install dependencies automatically. Please ensure all dependencies are installed."
+      "⚠️ Could not check/install dependencies automatically. Please ensure all dependencies are installed.",
     );
   }
 
@@ -118,11 +118,11 @@ This is an example markdown file. You can edit or delete it from the admin dashb
   // Read template files from the dist directory (publicDir copied them there)
   const loginTemplate = await fs.readFile(
     path.join(__dirname, "login.template.tsx"),
-    "utf-8"
+    "utf-8",
   );
   const adminTemplate = await fs.readFile(
     path.join(__dirname, "admin.template.tsx"),
-    "utf-8"
+    "utf-8",
   );
 
   await fs.writeFile(path.join(adminDir, "page.tsx"), adminTemplate, "utf-8");
@@ -140,7 +140,7 @@ This is an example markdown file. You can edit or delete it from the admin dashb
   // Copy utils.ts
   const utilsTemplate = await fs.readFile(
     path.join(__dirname, "lib", "utils.ts"),
-    "utf-8"
+    "utf-8",
   );
   await fs.writeFile(path.join(libDir, "utils.ts"), utilsTemplate, "utf-8");
 
@@ -157,24 +157,24 @@ This is an example markdown file. You can edit or delete it from the admin dashb
   for (const componentFile of componentFiles) {
     const componentTemplate = await fs.readFile(
       path.join(__dirname, "components", "ui", componentFile),
-      "utf-8"
+      "utf-8",
     );
     await fs.writeFile(
       path.join(componentsDir, componentFile),
       componentTemplate,
-      "utf-8"
+      "utf-8",
     );
   }
 
   // Copy components.json
   const componentsJsonTemplate = await fs.readFile(
     path.join(__dirname, "components.json"),
-    "utf-8"
+    "utf-8",
   );
   await fs.writeFile(
     path.join(process.cwd(), "components.json"),
     componentsJsonTemplate,
-    "utf-8"
+    "utf-8",
   );
 
   console.log("✅ Scaffolded shadcn/ui components");
@@ -187,7 +187,7 @@ This is an example markdown file. You can edit or delete it from the admin dashb
   await fs.writeFile(
     path.join(apiCmsDir, "login", "route.ts"),
     `import { handleLogin } from '@fydemy/cms';\nexport { handleLogin as POST };\n`,
-    "utf-8"
+    "utf-8",
   );
 
   // Logout
@@ -195,7 +195,7 @@ This is an example markdown file. You can edit or delete it from the admin dashb
   await fs.writeFile(
     path.join(apiCmsDir, "logout", "route.ts"),
     `import { handleLogout } from '@fydemy/cms';\nexport { handleLogout as POST };\n`,
-    "utf-8"
+    "utf-8",
   );
 
   // Upload
@@ -203,7 +203,7 @@ This is an example markdown file. You can edit or delete it from the admin dashb
   await fs.writeFile(
     path.join(apiCmsDir, "upload", "route.ts"),
     `import { handleUpload } from '@fydemy/cms';\nexport { handleUpload as POST };\n`,
-    "utf-8"
+    "utf-8",
   );
 
   // List
@@ -225,7 +225,7 @@ export async function GET(
   return handlers.GET(request, { params });
 }
 `,
-    "utf-8"
+    "utf-8",
   );
 
   // Content
@@ -263,7 +263,7 @@ export async function DELETE(
   return handlers.DELETE(request, { params });
 }
 `,
-    "utf-8"
+    "utf-8",
   );
   console.log("✅ Created API routes");
 
@@ -272,7 +272,7 @@ export async function DELETE(
   try {
     await fs.access(middlewarePath);
     console.log(
-      "⚠️  middleware.ts already exists. Please manually add the CMS auth middleware:"
+      "⚠️  middleware.ts already exists. Please manually add the CMS auth middleware:",
     );
     console.log(`
 import { createAuthMiddleware } from '@fydemy/cms';
@@ -290,7 +290,7 @@ export function middleware(request: NextRequest) {
     await fs.writeFile(
       middlewarePath,
       `import { createAuthMiddleware } from '@fydemy/cms';\nimport { NextRequest } from 'next/server';\n\nexport function middleware(request: NextRequest) {\n  return createAuthMiddleware()(request);\n}\n\nexport const config = {\n  matcher: ['/admin/:path*'],\n  runtime: 'nodejs',\n};\n`,
-      "utf-8"
+      "utf-8",
     );
     console.log("✅ Created middleware.ts");
   }
@@ -314,10 +314,10 @@ export function middleware(request: NextRequest) {
   };
 
   const storageChoice = await askQuestion(
-    "Select production storage provider:\n  1. GitHub (default)\n  2. S3 / Cloudflare R2 / Vercel Blob\nEnter choice [1]: "
+    "Select production storage provider:\n  1. GitHub (default)\n  2. Cloudflare R2\nEnter choice [1]: ",
   );
 
-  const isS3 = storageChoice.trim() === "2";
+  const isCloudflareR2 = storageChoice.trim() === "2";
 
   let envContent = `CMS_ADMIN_USERNAME=admin
 CMS_ADMIN_PASSWORD=password
@@ -325,14 +325,13 @@ CMS_SESSION_SECRET=ensure_this_is_at_least_32_chars_long_random_string
 
 `;
 
-  if (isS3) {
-    envContent += `# S3 / Cloudflare R2 / Vercel Blob Storage
-STORAGE_BUCKET=my-bucket
-STORAGE_ENDPOINT=https://<accountid>.r2.cloudflarestorage.com
-STORAGE_ACCESS_KEY_ID=
-STORAGE_SECRET_ACCESS_KEY=
-STORAGE_REGION=auto
-STORAGE_PUBLIC_URL=https://pub-<id>.r2.dev
+  if (isCloudflareR2) {
+    envContent += `# Cloudflare R2 Storage
+CLOUDFLARE_ACCOUNT_ID=
+CLOUDFLARE_ACCESS_KEY_ID=
+CLOUDFLARE_SECRET_ACCESS_KEY=
+NEXT_PUBLIC_R2_PUBLIC_URL=
+R2_BUCKET_NAME=my-bucket
 `;
   } else {
     envContent += `# GitHub Storage (Production)
@@ -349,7 +348,7 @@ GITHUB_BRANCH=main
   console.log("");
   console.log("🎉 CMS initialized successfully!");
   console.log(
-    "1. Copy .env.local.example to .env.local and set your credentials"
+    "1. Copy .env.local.example to .env.local and set your credentials",
   );
   console.log("2. Run your dev server and visit /admin");
 }

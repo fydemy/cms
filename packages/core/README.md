@@ -128,7 +128,7 @@ const content = await getMarkdownContent("blog/post.md");
 await saveMarkdownContent(
   "blog/post.md",
   { title: "My Post", date: "2024-01-01" },
-  "# Hello World"
+  "# Hello World",
 );
 
 // Delete file
@@ -194,24 +194,60 @@ Files are stored locally in `/public/content` directory.
 
 ### Production
 
+You have two options for production storage:
+
+#### Option 1: GitHub Storage (Default)
+
 When `NODE_ENV=production` and `GITHUB_TOKEN` is set, all file operations are performed via GitHub API, creating commits directly to your repository.
+
+#### Option 2: Cloudflare R2 Storage
+
+When Cloudflare R2 credentials are set, files are stored in your R2 bucket. This is ideal for high-traffic sites and provides better performance.
+
+See [CLOUDFLARE_R2_SETUP.md](../../CLOUDFLARE_R2_SETUP.md) for detailed setup instructions.
 
 ## Environment Variables
 
-| Variable             | Required   | Description                     |
-| -------------------- | ---------- | ------------------------------- |
-| `CMS_ADMIN_USERNAME` | Yes        | Admin username                  |
-| `CMS_ADMIN_PASSWORD` | Yes        | Admin password                  |
-| `CMS_SESSION_SECRET` | Yes        | JWT secret (min 32 chars)       |
-| `GITHUB_TOKEN`       | Production | GitHub personal access token    |
-| `GITHUB_REPO`        | Production | Repository (format: owner/repo) |
-| `GITHUB_BRANCH`      | Production | Branch name (default: main)     |
+### Authentication (Required)
+
+| Variable             | Required | Description               |
+| -------------------- | -------- | ------------------------- |
+| `CMS_ADMIN_USERNAME` | Yes      | Admin username            |
+| `CMS_ADMIN_PASSWORD` | Yes      | Admin password            |
+| `CMS_SESSION_SECRET` | Yes      | JWT secret (min 32 chars) |
+
+### Storage: GitHub (Optional)
+
+| Variable        | Required   | Description                     |
+| --------------- | ---------- | ------------------------------- |
+| `GITHUB_TOKEN`  | Production | GitHub personal access token    |
+| `GITHUB_REPO`   | Production | Repository (format: owner/repo) |
+| `GITHUB_BRANCH` | Production | Branch name (default: main)     |
+
+### Storage: Cloudflare R2 (Optional)
+
+| Variable                       | Required | Description                |
+| ------------------------------ | -------- | -------------------------- |
+| `CLOUDFLARE_ACCOUNT_ID`        | Yes      | Your Cloudflare Account ID |
+| `CLOUDFLARE_ACCESS_KEY_ID`     | Yes      | R2 API Access Key ID       |
+| `CLOUDFLARE_SECRET_ACCESS_KEY` | Yes      | R2 API Secret Access Key   |
+| `NEXT_PUBLIC_R2_PUBLIC_URL`    | Yes      | Public URL for R2 bucket   |
+| `R2_BUCKET_NAME`               | Yes      | Name of your R2 bucket     |
 
 ## GitHub Setup
 
 1. Create a GitHub Personal Access Token with `repo` permissions
 2. Add the token to your environment variables
 3. Deploy to Vercel and configure the environment variables
+
+## Cloudflare R2 Setup
+
+1. Create an R2 bucket in your Cloudflare dashboard
+2. Generate API tokens with read/write permissions
+3. Configure your bucket's public access settings
+4. Add the credentials to your environment variables
+
+For detailed instructions, see [CLOUDFLARE_R2_SETUP.md](../../CLOUDFLARE_R2_SETUP.md).
 
 ## FAQ
 
